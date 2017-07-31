@@ -1,0 +1,15 @@
+id: GlobalCategories
+name: GlobalCategories
+version: 1.0
+description: <__trans phrase='Categories like global categories are available.'>
+plugin_link: https://github.com/bit-part/mt-plugin-GlobalCategories/
+author_name: <__trans phrase='bit part LLC'>
+author_link: http://bit-part.net/
+l10n_class: GlobalCategories::L10N
+blog_config_template: config_template.tmpl
+settings:
+    gcat_blog_id:
+callbacks:
+    template_param.edit_entry: $tGlobalCategoriesest::GlobalCategories::Plugin::hdlr_edit_entry_param
+    template_source.category_selector: $tGlobalCategoriesest::GlobalCategories::Plugin::hdlr_category_selector_source
+    template_source.footer: $tGlobalCategoriesest::GlobalCategories::Plugin::hdlr_footer_source
