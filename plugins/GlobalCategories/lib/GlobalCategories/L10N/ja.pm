@@ -12,6 +12,7 @@ use vars qw( %Lexicon );
     'bit part LLC' => 'bit part 合同会社',
     'Categories like global categories are available.' => '特定のブログのカテゴリをグローバルカテゴリのように利用できます。',
     # config_template.yaml
+    'This Blog is a global category blog.' => 'このブログをグローバルカテゴリ管理ブログとする',
     'Global Categories Blog ID' => 'グローバルカテゴリ・ブログID',
 );
 

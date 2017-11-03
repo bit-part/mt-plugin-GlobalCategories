@@ -1,6 +1,27 @@
 <mtapp:setting
+    id="is_gcat_blog"
+    label="<__trans phrase="This Blog is a global category blog.">">
+    <select name="is_gcat_blog" id="is_gcat_blog">
+        <option value="0"><__trans phrase="No"></option>
+        <option value="1"<mt:If name="is_gcat_blog" eq="1"> selected="selected"</mt:If>><__trans phrase="Yes"></option>
+    </select>
+    <script type="text/javascript">
+        jQuery(function ($) {
+          $('#is_gcat_blog').on('change', function () {
+            if ($(this).val() == 1) {
+              $('#gcat_blog_id').val('').prop('readonly', true);
+            }
+            else {
+              $('#gcat_blog_id').prop('readonly', false);
+            }
+          }).trigger('change');
+        });
+    </script>
+</mtapp:setting>
+
+<mtapp:setting
     id="gcat_blog_id"
-    label="<__trans phrase="Global Categories Blog ID:">"
+    label="<__trans phrase="Global Categories Blog ID">"
     hint="<__trans phrase="Hint">">
     <input class="text num" type="text" name="gcat_blog_id" id="gcat_blog_id" value="<mt:var name="gcat_blog_id" escape="html">" />
 </mtapp:setting>

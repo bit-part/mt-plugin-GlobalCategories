@@ -1,6 +1,6 @@
 id: GlobalCategories
 name: GlobalCategories
-version: 1.0
+version: 1.1.0
 description: <__trans phrase='Categories like global categories are available.'>
 plugin_link: https://github.com/bit-part/mt-plugin-GlobalCategories/
 author_name: <__trans phrase='bit part LLC'>
@@ -9,7 +9,18 @@ l10n_class: GlobalCategories::L10N
 blog_config_template: config_template.tmpl
 settings:
     gcat_blog_id:
+        scope: blog
+    is_gcat_blog:
+        default: 0
+        scope: blog
 callbacks:
-    template_param.edit_entry: $tGlobalCategoriesest::GlobalCategories::Plugin::hdlr_edit_entry_param
-    template_source.category_selector: $tGlobalCategoriesest::GlobalCategories::Plugin::hdlr_category_selector_source
-    template_source.footer: $tGlobalCategoriesest::GlobalCategories::Plugin::hdlr_footer_source
+    MT::App::CMS::cms_post_save.entry: $GlobalCategories::GlobalCategories::Plugin::hdlr_post_save_entry
+    template_param.edit_entry: $GlobalCategories::GlobalCategories::Plugin::hdlr_edit_entry_param
+    template_source.category_selector: $GlobalCategories::GlobalCategories::Plugin::hdlr_category_selector_source
+    template_source.footer: $GlobalCategories::GlobalCategories::Plugin::hdlr_footer_source
+    template_source.edit_category: $GlobalCategories::GlobalCategories::Plugin::hdlr_template_source_edit_category
+    template_source.list_category: $GlobalCategories::GlobalCategories::Plugin::hdlr_template_source_list_category
+    list_template_param.entry: $GlobalCategories::GlobalCategories::Plugin::hdlr_list_template_param_entry
+tags:
+    function:
+        GlobalCategoryEntryCount: $GlobalCategories::GlobalCategories::Plugin::hdlr_global_category_entry_count
