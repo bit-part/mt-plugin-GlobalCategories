@@ -2,7 +2,6 @@ package GlobalCategories::Plugin;
 
 use strict;
 use warnings;
-use MT::Category;
 
 sub plugin {
     return MT->component('GlobalCategories');
@@ -52,14 +51,14 @@ sub hdlr_edit_entry_param {
     my $gcat_blog_id = $plugin->get_config_value('gcat_blog_id', $scope);
     return unless $gcat_blog_id;
     
-    # Add global categories to current blog categories
-    my @gcats = MT->model('category')->load({ blog_id => $gcat_blog_id});
+    # Build a global categories list
+    my $gcats = $app->_build_category_list(
+        blog_id => $gcat_blog_id,
+        markers => 1,
+        type    => 'category',
+    );
+    @$gcats = reverse(@$gcats);
 
-    # Order by user_custom
-    my $gcat_blog = MT->model('blog')->load($gcat_blog_id);
-    my $text = $gcat_blog->category_order || '';
-    @gcats = MT::Category::_sort_by_id_list( $text, \@gcats );
-    @gcats = reverse(@gcats);
 
     my @selected_gcats = MT->model('placement')->load({
         blog_id => $gcat_blog_id,
@@ -71,6 +70,7 @@ sub hdlr_edit_entry_param {
             push(@{$param->{selected_category_loop}}, $selected_gcats->category_id);
         }
     }
+
     # unshift @{$param->{category_tree}}, {
     #     id       => '',
     #     label    => '--------------------',
@@ -78,12 +78,15 @@ sub hdlr_edit_entry_param {
     #     path     => [],
     #     fields   => [],
     # };
-    foreach (@gcats) {
+    foreach (@$gcats) {
+        if ($_->{BEGIN_SUBCATS} || $_->{END_SUBCATS}) {
+            next;
+        }
         unshift @{$param->{category_tree}}, {
-            id       => $_->id,
-            label    => $_->label,
-            basename => $_->basename,
-            path     => $_->parent || [],
+            id       => $_->{category_id},
+            label    => $_->{category_label},
+            basename => $_->{category_basename},
+            path     => $_->{category_path_ids }|| [],
             fields   => [],
         };
 
@@ -91,8 +94,8 @@ sub hdlr_edit_entry_param {
     
     # Add styles to hide add buttons of global categories
     my $gcats_styles = '';
-    foreach (@gcats) {
-        $gcats_styles .= 'a.add-category-new-link-id-' . $_->id . '{ display: none !important; }';
+    foreach (@$gcats) {
+        $gcats_styles .= 'a.add-category-new-link-id-' . $_->{category_id} . '{ display: none !important; }';
     }
 
     $param->{global_categories_script} = <<"EOD";
