@@ -1,6 +1,6 @@
 id: GlobalCategories
 name: GlobalCategories
-version: 1.1.0
+version: 1.2.0
 description: <__trans phrase='Categories like global categories are available.'>
 plugin_link: https://github.com/bit-part/mt-plugin-GlobalCategories/
 author_name: <__trans phrase='bit part LLC'>

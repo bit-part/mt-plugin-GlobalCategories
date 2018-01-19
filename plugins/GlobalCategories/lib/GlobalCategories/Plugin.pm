@@ -2,6 +2,7 @@ package GlobalCategories::Plugin;
 
 use strict;
 use warnings;
+use MT::Category;
 
 sub plugin {
     return MT->component('GlobalCategories');
@@ -44,7 +45,7 @@ sub hdlr_post_save_entry {
 
 sub hdlr_edit_entry_param {
     my ($cb, $app, $param, $tmpl) = @_;
-    
+
     my $blog_id = $app->blog->id;
     my $scope = 'blog:'.$blog_id;
     my $plugin = plugin();
@@ -53,12 +54,18 @@ sub hdlr_edit_entry_param {
     
     # Add global categories to current blog categories
     my @gcats = MT->model('category')->load({ blog_id => $gcat_blog_id});
+
+    # Order by user_custom
+    my $gcat_blog = MT->model('blog')->load($gcat_blog_id);
+    my $text = $gcat_blog->category_order || '';
+    @gcats = MT::Category::_sort_by_id_list( $text, \@gcats );
     @gcats = reverse(@gcats);
 
     my @selected_gcats = MT->model('placement')->load({
         blog_id => $gcat_blog_id,
         entry_id => $param->{id},
     });
+
     if (@selected_gcats) {
         foreach my $selected_gcats (@selected_gcats) {
             push(@{$param->{selected_category_loop}}, $selected_gcats->category_id);
@@ -82,7 +89,7 @@ sub hdlr_edit_entry_param {
 
     }
     
-    # Add styles for global categories
+    # Add styles to hide add buttons of global categories
     my $gcats_styles = '';
     foreach (@gcats) {
         $gcats_styles .= 'a.add-category-new-link-id-' . $_->id . '{ display: none !important; }';
